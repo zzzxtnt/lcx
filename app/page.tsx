@@ -7,6 +7,13 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { VT323 } from 'next/font/google';
+
+const vt323 = VT323({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-pixel',
+});
 
 // --- Constants ---
 const CANVAS_WIDTH = 800;
@@ -276,9 +283,9 @@ export default function GamePage() {
   }, [status, highScore]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 font-pixel select-none bg-[--color-bg]">
-      <div className="relative w-full max-w-[800px] border-2 border-[--color-ink] bg-[--color-surface] p-1 rounded-sm overflow-hidden">
-        <div className="absolute top-5 right-5 flex gap-5 text-2xl font-bold z-20 text-[--color-ink]">
+    <div className={`${vt323.variable} flex flex-col items-center justify-center min-h-screen p-4 font-pixel select-none bg-bg text-ink`}>
+      <div className="relative w-full max-w-[800px] border-2 border-ink bg-surface p-1 rounded-sm overflow-hidden">
+        <div className="absolute top-5 right-5 flex gap-5 text-2xl font-bold z-20 text-ink">
           <span className="opacity-40">HI {highScore.toString().padStart(6, "0")}</span>
           <span>{score.toString().padStart(6, "0")}</span>
         </div>
@@ -306,8 +313,8 @@ export default function GamePage() {
               exit={{ opacity: 0 }}
               className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-30"
             >
-              <h1 className="text-4xl mb-6 tracking-[0.2em] text-[--color-ink]">DINO PIXEL JUMP</h1>
-              <p className="text-lg mb-8 text-[--color-ink]/60 uppercase">Classic 8-bit monochromatic survival runner</p>
+              <h1 className="text-4xl mb-6 tracking-[0.2em] text-ink italic uppercase">DINO PIXEL JUMP</h1>
+              <p className="text-lg mb-8 text-ink/60 uppercase">Classic 8-bit monochromatic survival runner</p>
               <div className="key-hint">PRESS SPACE TO JUMP</div>
             </motion.div>
           )}
@@ -318,16 +325,16 @@ export default function GamePage() {
               animate={{ opacity: 1 }}
               className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-[1px] z-30"
             >
-              <h2 className="text-4xl mb-4 tracking-widest text-[--color-ink]">GAME OVER</h2>
-              <p className="text-xl mb-6 text-[--color-ink]/60">SCORE: {score}</p>
+              <h2 className="text-4xl mb-4 tracking-widest text-ink italic">GAME OVER</h2>
+              <p className="text-xl mb-6 text-ink/60">SCORE: {score}</p>
               <button
                 id="restart-btn"
                 onClick={startGame}
-                className="px-10 py-3 border-2 border-[--color-ink] text-[--color-ink] text-xl hover:bg-[--color-ink] hover:text-white transition-all uppercase font-bold"
+                className="px-10 py-3 border-2 border-ink text-ink text-xl hover:bg-ink hover:text-white transition-all uppercase font-bold cursor-pointer"
               >
                 RETRY
               </button>
-              <p className="mt-4 text-xs text-[--color-ink]/40 italic uppercase">PRESS SPACE TO RESTART</p>
+              <p className="mt-4 text-xs text-ink/40 italic uppercase">PRESS SPACE TO RESTART</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -336,19 +343,19 @@ export default function GamePage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full max-w-[800px] border-t border-gray-200 pt-8 uppercase">
         <div className="flex flex-col items-center">
           <span className="text-[10px] text-gray-400 tracking-widest mb-1">Current Multiplier</span>
-          <span className="text-xl font-bold text-[--color-ink]">x{speedMultiplier.toFixed(1)} (Speed +{Math.round((speedMultiplier - 1) * 100)}%)</span>
+          <span className="text-xl font-bold text-ink italic">x{speedMultiplier.toFixed(1)} (Speed +{Math.round((speedMultiplier - 1) * 100)}%)</span>
         </div>
         <div className="flex flex-col items-center">
           <span className="text-[10px] text-gray-400 tracking-widest mb-1">Jump Limit</span>
-          <span className="text-xl font-bold text-[--color-ink]">3 Units</span>
+          <span className="text-xl font-bold text-ink italic">3 Units</span>
         </div>
         <div className="flex flex-col items-center">
           <span className="text-[10px] text-gray-400 tracking-widest mb-1">Next Milestone</span>
-          <span className="text-xl font-bold text-[--color-ink]">{Math.ceil((score || 100) / 100) * 100} Points</span>
+          <span className="text-xl font-bold text-ink italic">{Math.ceil((score || 100) / 100) * 100} Points</span>
         </div>
       </div>
 
-      <div className="mt-16 text-[--color-ink]/40 text-center max-w-sm uppercase tracking-tighter text-[10px]">
+      <div className="mt-16 text-ink/40 text-center max-w-sm uppercase tracking-tighter text-[10px]">
         <p>Geometric Balance Protocol v1.4.2</p>
         <p className="mt-1">Monochromatic Rendering Pipeline Enabled</p>
       </div>
