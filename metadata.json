@@ -1,0 +1,6 @@
+{
+  "name": "Pixel Dino Run",
+  "description": "A classic 2D pixel-art dinosaur runner game where you jump over obstacles to reach high scores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
