@@ -46,6 +46,7 @@ export default function GamePage() {
   const [score, setScore] = useState(0);
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [highScore, setHighScore] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Use state or ref for game mechanics
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,12 +65,17 @@ export default function GamePage() {
     frameCount: 0,
   });
 
-  // Client-side initialization for highScore
+  // Client-side initialization for highScore and mobile detection
   useEffect(() => {
     const saved = localStorage.getItem("dino_highscore");
     if (saved) {
       setHighScore(parseInt(saved));
     }
+    
+    // Simple mobile detection including pointer type
+    const mobileCheck = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+      || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+    setIsMobile(mobileCheck);
   }, []);
 
   // Handle Input
@@ -282,6 +288,14 @@ export default function GamePage() {
     return () => cancelAnimationFrame(gameRef.current.animationId);
   }, [status, highScore]);
 
+  const handleJump = () => {
+    if (status === "START" || status === "GAMEOVER") startGame();
+    else if (status === "PLAYING" && !gameRef.current.isJumping) {
+       gameRef.current.isJumping = true;
+       gameRef.current.dinoVelocityY = JUMP_FORCE;
+    }
+  };
+
   return (
     <div className={`${vt323.variable} flex flex-col items-center justify-center min-h-screen p-4 font-pixel select-none bg-bg text-ink`}>
       <div className="relative w-full max-w-[800px] border-2 border-ink bg-surface p-1 rounded-sm overflow-hidden">
@@ -295,14 +309,8 @@ export default function GamePage() {
           ref={canvasRef}
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
-          className="w-full h-auto pixel-art cursor-pointer block"
-          onClick={() => {
-            if (status === "START" || status === "GAMEOVER") startGame();
-            else if (status === "PLAYING" && !gameRef.current.isJumping) {
-               gameRef.current.isJumping = true;
-               gameRef.current.dinoVelocityY = JUMP_FORCE;
-            }
-          }}
+          className="w-full h-auto pixel-art cursor-pointer block touch-none"
+          onClick={handleJump}
         />
 
         <AnimatePresence>
@@ -314,8 +322,8 @@ export default function GamePage() {
               className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-30"
             >
               <h1 className="text-4xl mb-6 tracking-[0.2em] text-ink italic uppercase">DINO PIXEL JUMP</h1>
-              <p className="text-lg mb-8 text-ink/60 uppercase">Classic 8-bit monochromatic survival runner</p>
-              <div className="key-hint">PRESS SPACE TO JUMP</div>
+              <p className="text-lg mb-8 text-ink/60 uppercase text-center">Classic 8-bit monochromatic survival runner</p>
+              <div className="key-hint">{isMobile ? "TAP SCREEN TO START" : "PRESS SPACE TO JUMP"}</div>
             </motion.div>
           )}
 
@@ -334,11 +342,25 @@ export default function GamePage() {
               >
                 RETRY
               </button>
-              <p className="mt-4 text-xs text-ink/40 italic uppercase">PRESS SPACE TO RESTART</p>
+              {!isMobile && <p className="mt-4 text-xs text-ink/40 italic uppercase">PRESS SPACE TO RESTART</p>}
+              {isMobile && <p className="mt-4 text-xs text-ink/40 italic uppercase">TAP SCREEN TO RESTART</p>}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      {/* Mobile Controls */}
+      {isMobile && status === "PLAYING" && (
+        <button
+          className="mt-8 w-full max-w-[300px] h-20 border-4 border-ink bg-surface text-ink text-3xl font-bold uppercase active:bg-ink active:text-white transition-colors cursor-pointer rounded-lg shadow-lg touch-none"
+          onPointerDown={(e) => {
+            e.preventDefault();
+            handleJump();
+          }}
+        >
+          JUMP
+        </button>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 w-full max-w-[800px] border-t border-gray-200 pt-8 uppercase">
         <div className="flex flex-col items-center">
